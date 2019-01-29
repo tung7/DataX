@@ -110,12 +110,15 @@ public class JobContainer extends AbstractContainer {
                 this.preHandle();
 
                 LOG.debug("jobContainer starts to do init ...");
+                // reader和writer的初始化
                 this.init();
                 LOG.info("jobContainer starts to do prepare ...");
                 this.prepare();
                 LOG.info("jobContainer starts to do split ...");
                 this.totalStage = this.split();
                 LOG.info("jobContainer starts to do schedule ...");
+                // schedule首先完成的工作是把上一步reader和writer split的结果整合到具体taskGroupContainer中,
+                // 同时不同的执行模式调用不同的调度策略，将所有任务调度起来
                 this.schedule();
                 LOG.debug("jobContainer starts to do post ...");
                 this.post();
