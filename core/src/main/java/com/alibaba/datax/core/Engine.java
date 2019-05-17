@@ -125,6 +125,9 @@ public class Engine {
         options.addOption("jobid", true, "Job unique id.");
         options.addOption("mode", true, "Job runtime mode.");
 
+//       programArgs:  "-mode standalone -jobid -1 -job F:\\stream2stream.json";
+        // vmopts: -server -Xms1g -Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\workspace\DataX\target\datax\datax\log -Dloglevel=info -Dfile.encoding=UTF-8 -Dlogback.statusListenerClass=ch.qos.logback.core.status.NopStatusListener -Ddatax.home=D:\workspace\DataX\target\datax\datax -Dlogback.configurationFile=D:\workspace\DataX\target\datax\datax\conf\logback.xml  -Dlog.file.name=F:\mysql2mysql_json
+
         BasicParser parser = new BasicParser();
         CommandLine cl = parser.parse(options, args);
 

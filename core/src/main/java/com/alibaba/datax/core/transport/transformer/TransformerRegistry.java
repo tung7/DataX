@@ -30,7 +30,7 @@ public class TransformerRegistry {
          * add native transformer
          * local storage and from server will be delay load.
          */
-
+        registComplexTransformer(new DesensitizeTransformer(), null, false);
         registTransformer(new SubstrTransformer());
         registTransformer(new PadTransformer());
         registTransformer(new ReplaceTransformer());

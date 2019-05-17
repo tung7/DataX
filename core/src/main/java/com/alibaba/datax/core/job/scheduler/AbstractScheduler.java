@@ -33,6 +33,7 @@ public abstract class AbstractScheduler {
         this.containerCommunicator = containerCommunicator;
     }
 
+    // taskGroup的Configuration列表
     public void schedule(List<Configuration> configurations) {
         Validate.notNull(configurations,
                 "scheduler配置不能为空");

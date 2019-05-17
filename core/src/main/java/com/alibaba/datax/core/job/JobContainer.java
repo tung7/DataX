@@ -645,8 +645,25 @@ public class JobContainer extends AbstractContainer {
                     communication.getLongCounter(CommunicationTool.TRANSFORMER_FILTER_RECORDS)
             ));
         }
+        LOG.info(String.format("哈哈哈哈：统计总行: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_LINE_COUNT)));
+        LOG.info(String.format("哈哈哈哈：【总数据量（byte）】读取总字节: %d", communication.getLongCounter(CommunicationTool.READ_SUCCEED_BYTES)));
+        LOG.info(String.format("哈哈哈哈：写入总字节: %d", communication.getLongCounter(CommunicationTool.WRITE_RECEIVED_BYTES)));
+
+        /*下面都要通过Transformer进行统计, 要在Transformer中统计，传到外面去*/
+        LOG.info(String.format("哈哈哈哈：【总记录数】总条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_ALL_ITEMS)));
+        LOG.info(String.format("哈哈哈哈：【敏感数据记录数】脱敏条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_ITEMS)));
+        LOG.info(String.format("哈哈哈哈：【敏感数据量（byte）】脱敏字节数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_BYTES)));
+
+        // 可以用TRANSFORMER_USED_TIME/1000
+        LOG.info(String.format("哈哈哈哈：【敏感数据处理时间（耗时毫秒）】脱敏耗时: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_TIME)));
+        LOG.info(String.format("哈哈哈哈：【敏感数据处理时间（耗时毫秒）】脱敏耗时_old: %d", communication.getLongCounter(CommunicationTool.TRANSFORMER_USED_TIME)/1000000));
+
+        LOG.info(String.format("哈哈哈哈：【入库成功总数】入库成功条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_STORE_SUCCEED_ITEMS)));
+        LOG.info(String.format("哈哈哈哈：【入库失败总数】入库失败条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_STORE_FAIL_ITEMS)));
 
 
+        LOG.info(String.format("哈哈哈哈：【脱敏成功总数】脱敏成功条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_SUCCEED_ITEMS)));
+        LOG.info(String.format("哈哈哈哈：【脱敏失败总数】脱敏失败条数: %d", communication.getLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_FAIL_ITEMS)));
     }
 
     /**
