@@ -1,0 +1,63 @@
+{
+  "core":{
+    "transport": {
+      "exchanger": {
+        "bufferSize": 32
+      },
+      "channel": {
+        "byteCapacity": 671088640,
+        "flowControlInterval": 20,
+        "class": "com.alibaba.datax.core.transport.channel.memory.MemoryChannel",
+        "speed": {
+          "byte": -1,
+          "record": -1
+        },
+        "capacity": 20480
+      }
+    }
+  },
+  "job": {
+    "content": [
+      {
+        "reader": {
+          "name": "streamreader",
+          "parameter": {
+            "sliceRecordCount": 1000000,
+            "column": [
+              {"type": "string","value": "张三丰"},
+              {"type": "long","value": "60"},
+              {"type": "string","value": "1370000001"},
+              {"type": "string","value": "1231241234@qq.com"},
+              {"type": "string","value": "中华人民共和国广东省深圳市南山区软件产业基地"},
+              {"type": "string","value": "1341341234"},
+              {"type": "string","value": "440808199301010808"},
+              {"type": "double","value": "19.5"},
+              {"type": "date","value": "1993-01-01 08:08:08"}
+            ]
+          }
+        },
+        "writer": {
+          "parameter": {
+            "batchSize":"204800",
+            "batchByteSize":"16777216",
+            "password": "root",
+            "column": ["name", "age", "phone", "email", "address", "qq", "id_card", "weight", "birth"],
+            "connection": [{
+              "jdbcUrl": "jdbc:mysql://localhost:3306/tung_target?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&connectTimeout=2000",
+              "table": ["tt_user"]
+            }],
+            "writeMode": "insert",
+            "username": "root",
+            "preSql": ["truncate tt_user"]
+          },
+          "name": "mysqlwriter"
+        }
+      }
+    ],
+    "setting": {
+      "speed": {
+        "channel": 5
+      }
+    }
+  }
+}

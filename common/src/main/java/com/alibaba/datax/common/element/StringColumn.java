@@ -2,6 +2,7 @@ package com.alibaba.datax.common.element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import com.alibaba.datax.common.exception.CommonErrorCode;
@@ -18,8 +19,8 @@ public class StringColumn extends Column {
 	}
 
 	public StringColumn(final String rawData) {
-		super(rawData, Column.Type.STRING, (null == rawData ? 0 : rawData
-				.length()));
+//		super(rawData, Column.Type.STRING, (null == rawData ? 0 : rawData.length()));
+		super(rawData, Column.Type.STRING, (null == rawData ? 0 : rawData.getBytes(StandardCharsets.UTF_8).length));
 	}
 
 	@Override

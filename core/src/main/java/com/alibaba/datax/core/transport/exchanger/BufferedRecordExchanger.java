@@ -55,7 +55,7 @@ public class BufferedRecordExchanger implements RecordSender, RecordReceiver {
 		//channel的queue默认大小为8M，原来为64M
 		this.byteCapacity = configuration.getInt(
 				CoreConstant.DATAX_CORE_TRANSPORT_CHANNEL_CAPACITY_BYTE, 8 * 1024 * 1024);
-
+		System.out.println("@Tung bufferSize: "+bufferSize+", byteCapacity: " + byteCapacity);
 		try {
 			BufferedRecordExchanger.RECORD_CLASS = ((Class<? extends Record>) Class
 					.forName(configuration.getString(

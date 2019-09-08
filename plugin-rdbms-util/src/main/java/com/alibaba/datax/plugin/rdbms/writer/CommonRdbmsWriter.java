@@ -185,6 +185,7 @@ public class CommonRdbmsWriter {
         protected List<String> preSqls;
         protected List<String> postSqls;
         protected int batchSize;
+        protected static volatile boolean print = false;
         protected int batchByteSize;
         protected int columnNumber = 0;
         protected TaskPluginCollector taskPluginCollector;
@@ -231,7 +232,7 @@ public class CommonRdbmsWriter {
             this.postSqls = writerSliceConfig.getList(Key.POST_SQL, String.class);
             this.batchSize = writerSliceConfig.getInt(Key.BATCH_SIZE, Constant.DEFAULT_BATCH_SIZE);
             this.batchByteSize = writerSliceConfig.getInt(Key.BATCH_BYTE_SIZE, Constant.DEFAULT_BATCH_BYTE_SIZE);
-
+            System.out.println("@Tung batchSize: "+batchSize+", batchByteSize: " + batchByteSize);
             writeMode = writerSliceConfig.getString(Key.WRITE_MODE, "INSERT");
             emptyAsNull = writerSliceConfig.getBool(Key.EMPTY_AS_NULL, true);
             INSERT_OR_REPLACE_TEMPLATE = writerSliceConfig.getString(Constant.INSERT_OR_REPLACE_TEMPLATE_MARK);
@@ -288,12 +289,20 @@ public class CommonRdbmsWriter {
                     bufferBytes += record.getMemorySize();
 
                     if (writeBuffer.size() >= batchSize || bufferBytes >= batchByteSize) {
+                        if (!print) {
+                            System.out.println("@Tung writeBuffer.size() >= batchSize? : " + (writeBuffer.size() >= batchSize) + ", bufferBytes >= batchByteSize:" + (bufferBytes >= batchByteSize));
+                            print = true;
+                        }
                         doBatchInsert(connection, writeBuffer);
                         writeBuffer.clear();
                         bufferBytes = 0;
                     }
                 }
                 if (!writeBuffer.isEmpty()) {
+                    if (!print) {
+                        System.out.println("@Tung writeBuffer.size() >= batchSize? : " + (writeBuffer.size() >= batchSize) + ", bufferBytes >= batchByteSize:" + (bufferBytes >= batchByteSize));
+                        print = true;
+                    }
                     doBatchInsert(connection, writeBuffer);
                     writeBuffer.clear();
                     bufferBytes = 0;
