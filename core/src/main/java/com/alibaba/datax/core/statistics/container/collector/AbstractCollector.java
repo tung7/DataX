@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @Tung : 每一个Job一个Collector，内部有一个Map维护每个task的Comminication
+ */
 public abstract class AbstractCollector {
     private Map<Integer, Communication> taskCommunicationMap = new ConcurrentHashMap<Integer, Communication>();
     private Long jobId;

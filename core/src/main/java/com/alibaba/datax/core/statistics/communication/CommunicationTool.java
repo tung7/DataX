@@ -49,6 +49,17 @@ public final class CommunicationTool {
     public static final String TRANSFORMER_FILTER_RECORDS = "totalTransformerFilterRecords";
     public static final String TRANSFORMER_NAME_PREFIX = "usedTimeByTransformer_";
 
+
+    public static final String TUNG_TEST_LINE_COUNT = "tungTestTaskCount";
+    public static final String TUNG_TEST_ALL_ITEMS = "TUNG_TEST_ALL_ITEMS";
+    public static final String TUNG_TEST_DESENSIVE_ITEMS = "TUNG_TEST_DESENSIVE_ITEMS";
+    public static final String TUNG_TEST_DESENSIVE_BYTES = "TUNG_TEST_DESENSIVE_BYTES";
+    public static final String TUNG_TEST_DESENSIVE_TIME = "TUNG_TEST_DESENSIVE_TIME";
+    public static final String TUNG_TEST_STORE_SUCCEED_ITEMS = "TUNG_TEST_STORE_SUCCEED_ITEMS";
+    public static final String TUNG_TEST_STORE_FAIL_ITEMS = "TUNG_TEST_STORE_FAIL_ITEMS";
+    public static final String TUNG_TEST_DESENSIVE_SUCCEED_ITEMS = "TUNG_TEST_DESENSIVE_SUCCEED_ITEMS";
+    public static final String TUNG_TEST_DESENSIVE_FAIL_ITEMS = "TUNG_TEST_DESENSIVE_FAIL_ITEMS";
+
     public static Communication getReportCommunication(Communication now, Communication old, int totalStage) {
         Validate.isTrue(now != null && old != null,
                 "为汇报准备的新旧metric不能为null");

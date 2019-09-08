@@ -5,13 +5,16 @@ import com.alibaba.datax.common.exception.DataXException;
 import com.alibaba.datax.common.plugin.TaskPluginCollector;
 import com.alibaba.datax.core.statistics.communication.Communication;
 import com.alibaba.datax.core.statistics.communication.CommunicationTool;
+import com.alibaba.datax.core.transport.transformer.DesensitizeTransformer;
 import com.alibaba.datax.core.transport.transformer.TransformerErrorCode;
 import com.alibaba.datax.core.transport.transformer.TransformerExecution;
 import com.alibaba.datax.core.util.container.ClassLoaderSwapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * no comments.
@@ -30,6 +33,16 @@ public abstract class TransformerExchanger {
     private long totalFilterRecords = 0;
     private long totalSuccessRecords = 0;
     private long totalFailedRecords = 0;
+    private long tungTestLineCount = 0;
+
+    private long TUNG_TEST_ALL_ITEMS = 0;
+    private long TUNG_TEST_DESENSIVE_ITEMS = 0;
+    private long TUNG_TEST_DESENSIVE_BYTES = 0;
+    private long TUNG_TEST_DESENSIVE_TIME = 0;
+    private long TUNG_TEST_STORE_SUCCEED_ITEMS = 0;
+    private long TUNG_TEST_STORE_FAIL_ITEMS = 0;
+    private long TUNG_TEST_DESENSIVE_SUCCEED_ITEMS = 0;
+    private long TUNG_TEST_DESENSIVE_FAIL_ITEMS = 0;
 
 
     private List<TransformerExecution> transformerExecs;
@@ -54,6 +67,9 @@ public abstract class TransformerExchanger {
         if (transformerExecs == null || transformerExecs.size() == 0) {
             return record;
         }
+
+        Map<String, Number> statMap = new HashMap<String, Number>();
+
 
         Record result = record;
 
@@ -82,7 +98,12 @@ public abstract class TransformerExchanger {
                 transformerInfoExec.setIsChecked(true);
             }
 
+            if (transformerInfoExec.getTransformer() instanceof DesensitizeTransformer) {
+                transformerInfoExec.gettContext().put("statMap", statMap);
+            }
+
             try {
+                // 这里返回
                 result = transformerInfoExec.getTransformer().evaluate(result, transformerInfoExec.gettContext(), transformerInfoExec.getFinalParas());
             } catch (Exception e) {
                 errorMsg = String.format("transformer(%s) has Exception(%s)", transformerInfoExec.getTransformerName(),
@@ -116,6 +137,18 @@ public abstract class TransformerExchanger {
 
         totalExaustedTime += diffExaustedTime;
 
+
+        tungTestLineCount++;
+        TUNG_TEST_ALL_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_ALL_ITEMS, 0).longValue();
+        TUNG_TEST_DESENSIVE_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_DESENSIVE_ITEMS, 0).longValue();
+        TUNG_TEST_DESENSIVE_BYTES += statMap.getOrDefault(CommunicationTool.TUNG_TEST_DESENSIVE_BYTES, 0).longValue();
+        TUNG_TEST_DESENSIVE_TIME += statMap.getOrDefault(CommunicationTool.TUNG_TEST_DESENSIVE_TIME, 0).longValue();
+        TUNG_TEST_STORE_SUCCEED_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_STORE_SUCCEED_ITEMS, 0).longValue();
+        TUNG_TEST_STORE_FAIL_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_STORE_FAIL_ITEMS, 0).longValue();
+        TUNG_TEST_DESENSIVE_SUCCEED_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_DESENSIVE_SUCCEED_ITEMS, 0).longValue();
+        TUNG_TEST_DESENSIVE_FAIL_ITEMS += statMap.getOrDefault(CommunicationTool.TUNG_TEST_DESENSIVE_FAIL_ITEMS, 0).longValue();
+
+
         if (failed) {
             totalFailedRecords++;
             this.pluginCollector.collectDirtyRecord(record, errorMsg);
@@ -141,6 +174,17 @@ public abstract class TransformerExchanger {
         currentCommunication.setLongCounter(CommunicationTool.TRANSFORMER_FAILED_RECORDS, totalFailedRecords);
         currentCommunication.setLongCounter(CommunicationTool.TRANSFORMER_FILTER_RECORDS, totalFilterRecords);
         currentCommunication.setLongCounter(CommunicationTool.TRANSFORMER_USED_TIME, totalExaustedTime);
+
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_LINE_COUNT, tungTestLineCount);
+
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_ALL_ITEMS, TUNG_TEST_ALL_ITEMS);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_ITEMS, TUNG_TEST_DESENSIVE_ITEMS);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_BYTES, TUNG_TEST_DESENSIVE_BYTES);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_TIME, TUNG_TEST_DESENSIVE_TIME);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_STORE_SUCCEED_ITEMS, TUNG_TEST_STORE_SUCCEED_ITEMS);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_STORE_FAIL_ITEMS, TUNG_TEST_STORE_FAIL_ITEMS);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_SUCCEED_ITEMS, TUNG_TEST_DESENSIVE_SUCCEED_ITEMS);
+        currentCommunication.setLongCounter(CommunicationTool.TUNG_TEST_DESENSIVE_FAIL_ITEMS, TUNG_TEST_DESENSIVE_FAIL_ITEMS);
     }
 
 

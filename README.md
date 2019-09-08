@@ -108,4 +108,133 @@ This software is free to use under the Apache License [Apache license](https://g
 ![DataX-OpenSource-Dingding](https://img.alicdn.com/tfs/TB1SdPUH21TBuNjy0FjXXajyXXa-359-504.png)
 
 
+```
+java -server -Xms1g -Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\workspace\DataX\target\datax\datax\log  -Dloglevel=info -Dfile.encoding=UTF-8 -Dlogback.statusListenerClass=ch.qos.logback.core.status
+.NopStatusListener -Djava.security.egd=file:///dev/urandom -Ddatax.home=D:\workspace\DataX\target\datax\datax -Dlogback.configurationFile=D:\workspace\DataX\target\datax\datax/conf/logback.xml -classpath D:\workspace\DataX\target\da
+tax\datax\lib\*  -Dlog.file.name=F:\mysql2mysql_json com.alibaba.datax.core.Engine -mode standalone -jobid -1 -job F:\mysql2mysql.json
+```
+
+```
+java -server -Xms1g -Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\workspace\DataX\target\datax\datax\log  -Dloglevel=info -Dfile.encoding=UTF-8 -Dlogback.statusListenerClass=ch.qos.logback.core.status
+.NopStatusListener  -Ddatax.home=D:\workspace\DataX\target\datax\datax -Dlogback.configurationFile=D:\workspace\DataX\target\datax\datax\conf\logback.xml -classpath D:\workspace\DataX\target\da
+tax\datax\lib\*  -Dlog.file.name=F:\mysql2mysql_json com.alibaba.datax.core.Engine -mode standalone -jobid -1 -job F:\mysql2mysql.json
+```
+
+# Tung
+VM 
+```
+-server -Xms1g -Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\workspace\DataX\target\datax\datax\log -Dloglevel=info -Dfile.encoding=UTF-8 -Dlogback.statusListenerClass=ch.qos.logback.core.status.NopStatusListener -Ddatax.home=D:\workspace\DataX\target\datax\datax -Dlogback.configurationFile=D:\workspace\DataX\target\datax\datax\conf\logback.xml -classpath D:\workspace\DataX\target\datax\datax\lib\* -Dlog.file.name=F:\mysql2mysql_json
+```
+
+args
+```
+-mode standalone -jobid -1 -job F:\mysql2mysql.json
+```
+
+
+json
+```json
+{
+  "job": {
+    "content": [{
+      "reader": {
+        "name": "mysqlreader",
+        "parameter": {
+          "username": "root",
+          "password": "root",
+          "connection": [{
+            "jdbcUrl": ["jdbc:mysql://10.118.74.211:3306/tung"],
+            "table": ["tung_user"]
+          }],
+          "column": ["id", "name", "phone", "email"],
+          "splitPk": "",
+          "where": "1=1"
+        }
+      },
+      "writer": {
+        "name": "mysqlwriter",
+        "parameter": {
+          "writeMode": "insert",
+          "username": "root",
+          "password": "root",
+          "connection": [{
+            "jdbcUrl": "jdbc:mysql://10.118.74.211:3306/xtarget?useUnicode=true&characterEncoding=utf-8",
+            "table": ["tung_test"]
+          }],
+          "column": ["id", "name", "phone", "email"],
+          "session": ["set session sql_mode='ANSI'"],
+          "preSql": ["delete from tung_test"]
+        }
+      }
+    }],
+    "setting": {
+      "speed": {
+        "channel": "1",
+        "errorLimit": {
+          "record": 0,
+          "percentage": 0.02
+        }
+      }
+    }
+  }
+}
+```
+
+
+```json
+{
+	"job": {
+		"content": [{
+			"reader": {
+				"name": "streamreader",
+				"parameter": {
+					"sliceRecordCount": 10,
+					"column": [{
+							"type": "long",
+							"value": "10"
+						},
+						{
+							"type": "string",
+							"value": "hello，你好，世界-DataX"
+						}
+					]
+				}
+			},
+			"writer": {
+				"name": "streamwriter",
+				"parameter": {
+					"encoding": "UTF-8",
+					"print": true
+				}
+			}
+		}],
+		"setting": {
+			"speed": {
+				"channel": 5 
+			}
+		}
+	}
+}
+```
+
+
+# 分布式改造
+
+- StandAloneScheduler 
+    - extends ProcessInnerScheduler 
+        - extends AbstractScheduler
+
+- ProcessInnerReporter 
+    - extends AbstractReporter
+
+- ProcessInnerCollector 
+    - extends AbstractCollector
+
+- StandaloneTGContainerCommunicator 
+    - extends AbstractTGContainerCommunicator 
+        - extends AbstractContainerCommunicator
+       
+- StandAloneJobContainerCommunicator 
+    - extends AbstractContainerCommunicator
+
 

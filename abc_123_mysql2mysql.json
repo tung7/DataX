@@ -1,0 +1,123 @@
+{
+	"core": {
+		"container": {
+			"trace": {
+				"enable": "false"
+			},
+			"job": {
+				"id": 12312,
+				"reportInterval": 10000
+			},
+			"taskGroup": {
+				"channel": 5
+			}
+		},
+		"transport": {
+			"exchanger": {
+				"class": "com.alibaba.datax.core.plugin.BufferedRecordExchanger",
+				"bufferSize": 32
+			},
+			"channel": {
+				"byteCapacity": 67108864,
+				"flowControlInterval": 20,
+				"class": "com.alibaba.datax.core.transport.channel.memory.MemoryChannel",
+				"speed": {
+					"byte": -1,
+					"record": -1
+				},
+				"capacity": 512
+			}
+		},
+		"statistics": {
+			"collector": {
+				"plugin": {
+					"taskClass": "com.alibaba.datax.core.statistics.plugin.task.StdoutPluginCollector",
+					"maxDirtyNumber": 10
+				}
+			}
+		}
+	},
+	"entry": {
+		"jvm": "-Xms1G -Xmx1G",
+		"environment": {}
+	},
+	"plugin": {},
+	"common": {
+		"column": {
+			"dateFormat": "yyyy-MM-dd",
+			"datetimeFormat": "yyyy-MM-dd HH:mm:ss",
+			"timeFormat": "HH:mm:ss",
+			"extraFormats": ["yyyyMMdd"],
+			"timeZone": "GMT+8",
+			"encoding": "utf-8"
+		}
+	},
+	"job": {
+		"content": [{
+			"reader": {
+				"parameter": {
+					"password": "root",
+					"column": ["id", "phone", "email", "ssn", "iso_8601", "date"],
+					"connection": [{
+						"jdbcUrl": ["jdbc:mysql://10.118.74.211:3306/tung?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&connectTimeout=2000"],
+						"table": ["abc_123"]
+					}],
+					"splitPk": "id",
+					"username": "root"
+				},
+				"name": "mysqlreader"
+			},
+			"transformer": [{
+				"parameter": {
+					"context": {
+						"algoParam": {
+							"1": [{
+								"algoArgs": "{\"type\":\"radio\",\"value\":\"whole\",\"portionValue\":[5,10],\"dom\":{\"whole\":{\"label\":\"全部脱敏\"},\"portion\":{\"label\":\"部分脱敏\",\"type\":\"range\",\"domLabel\":\"电话号\"}}}",
+								"algoClass": "com.sf.isic.dims.arithmetic.handler.random.PhoneRandomHandler",
+								"algoId": 16
+							}],
+							"2": [{
+								"algoArgs": "{\"type\":\"radio\",\"value\":\"whole\",\"portionValue\":\"username\",\"dom\":{\"whole\":{\"label\":\"全部脱敏\"},\"portion\":{\"label\":\"部分脱敏\",\"type\":\"radio\",\"dom\":{\"username\":{\"label\":\"用户名\"},\"domain\":{\"label\":\"域名\"}}}}}",
+								"algoClass": "com.sf.isic.dims.arithmetic.handler.random.EmailRandomHandler",
+								"algoId": 14
+							}],
+							"5": [{
+								"algoArgs": "{\"type\":\"radio\",\"value\":\"whole\",\"portionValue\":[\"month\",\"day\"],\"dom\":{\"whole\":{\"label\":\"全部脱敏\"},\"portion\":{\"label\":\"部分脱敏\",\"type\":\"checkbox\",\"dom\":{\"year\":{\"label\":\"年\"},\"month\":{\"label\":\"月\"},\"day\":{\"label\":\"日\"}}}}}",
+								"algoClass": "com.sf.isic.dims.arithmetic.handler.random.BirthRandomHandler",
+								"algoId": 10
+							}],
+						},
+						"taskId": 123123,
+						"tableName": "abc_123"
+					},
+					"columnIndex": 0,
+					"paras": ["1", "2", "5"]
+				},
+				"name": "sf_desensitizer"
+			}],
+			"writer": {
+				"parameter": {
+					"password": "root",
+					"column": ["id", "phone", "email", "ssn", "iso_8601", "date"],
+					"connection": [{
+						"jdbcUrl": "jdbc:mysql://10.118.74.211:3306/xtarget?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&connectTimeout=2000",
+						"table": ["abc_123"]
+					}],
+					"writeMode": "insert",
+					"username": "root",
+					"preSql": ["delete from abc_123"]
+				},
+				"name": "mysqlwriter"
+			}
+		}],
+		"setting": {
+			"speed": {
+				"errorLimit": {
+					"record": 0,
+					"percentage": 0.02
+				},
+				"channel": 5
+			}
+		}
+	}
+}

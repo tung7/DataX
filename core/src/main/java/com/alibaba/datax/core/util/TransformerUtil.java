@@ -2,6 +2,7 @@ package com.alibaba.datax.core.util;
 
 import com.alibaba.datax.common.exception.DataXException;
 import com.alibaba.datax.common.util.Configuration;
+import com.alibaba.datax.core.statistics.communication.Communication;
 import com.alibaba.datax.core.transport.transformer.*;
 import com.alibaba.datax.core.util.container.CoreConstant;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,7 @@ public class TransformerUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransformerUtil.class);
 
+//    @Deprecated //by @Tung
     public static List<TransformerExecution> buildTransformerInfo(Configuration taskConfig) {
         List<Configuration> tfConfigs = taskConfig.getListConfiguration(CoreConstant.JOB_TRANSFORMER);
         if (tfConfigs == null || tfConfigs.size() == 0) {
